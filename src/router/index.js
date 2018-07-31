@@ -1,15 +1,18 @@
 import Vue from 'vue';
-import Router from 'vue-router';
-import HelloWorld from '@/components/HelloWorld';
+import VueRouter from 'vue-router';
+import Libros from '@/components/Libros';
 
-Vue.use(Router);
+Vue.use(VueRouter);
 
-export default new Router({
+const router = new VueRouter({
+  mode: 'history',
   routes: [
     {
-      path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld,
+      path: '/api/libros',
+      name: 'Libros',
+      component: Libros,
     },
   ],
 });
+
+export default router;
