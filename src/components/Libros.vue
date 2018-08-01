@@ -1,7 +1,9 @@
 <template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/libros">Libros</a>
+      <a class="navbar-brand" href="/api/libros">Libros</a>
+      <a class="navbar-brand" href="/api/socios">Socios</a>
+      <a class="navbar-brand" href="/api/prestamos">Prestamos</a>
     </nav>
 
     <div class="container">
