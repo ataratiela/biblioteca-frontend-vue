@@ -9,7 +9,7 @@
         <div class="col-md-5">
           <div class="card">
             <div class="card-body">
-              <form @submit="createLibro">
+              <form @submit="enviarLibro">
                 <div class="form-group">
                   <input
                   v-model="libro.titulo"
@@ -46,7 +46,12 @@
                   type="text"
                   class="form-control">
                 </div>
-                <button class="btn btn-primary btn-block">Crear</button>
+                <template v-if="editar === false">
+                  <button class="btn btn-primary btn-block">Crear</button>
+                </template>
+                <template v-else>
+                  <button class="btn btn-primary btn-block">Actualizar</button>
+                </template>
               </form>
             </div>
           </div>
@@ -72,6 +77,9 @@
                 <td>
                   <button @click="deleteLibro(libro._id)" class="btn btn-danger">
                     Eliminar
+                  </button>
+                  <button @click="editLibro(libro._id)" class="btn btn-secondary">
+                    Editar
                   </button>
                 </td>
               </tr>
@@ -100,6 +108,8 @@ export default {
     return {
       libro: new Libro(),
       libros: [],
+      editar: false,
+      libroEditar: '',
     };
   },
   created() {
@@ -113,18 +123,34 @@ export default {
           this.libros = data;
         });
     },
-    createLibro() {
-      fetch('http://localhost:3000/api/libros', {
-        method: 'POST',
-        body: JSON.stringify(this.libro),
-        headers: {
-          'Content-type': 'application/json',
-        },
-      })
-        .then(res => res.json())
-        .then(() => {
-          this.getLibros();
-        });
+    enviarLibro() {
+      if (this.editar === false) {
+        fetch('http://localhost:3000/api/libros', {
+          method: 'POST',
+          body: JSON.stringify(this.libro),
+          headers: {
+            'Content-type': 'application/json',
+          },
+        })
+          .then(res => res.json())
+          .then(() => {
+            this.getLibros();
+          });
+      } else {
+        fetch(`http://localhost:3000/api/libros/${this.libroEditar}`, {
+          method: 'PUT',
+          body: JSON.stringify(this.libro),
+          headers: {
+            'Content-type': 'application/json',
+          },
+        })
+          .then(res => res.json())
+          .then(() => {
+            this.getLibros();
+            this.editar = false;
+          });
+      }
+      this.libro = new Libro();
     },
     deleteLibro(id) {
       fetch(`http://localhost:3000/api/libros/${id}`, {
@@ -136,6 +162,16 @@ export default {
         .then(res => res.json())
         .then(() => {
           this.getLibros();
+        });
+    },
+    editLibro(id) {
+      fetch(`http://localhost:3000/api/libros/${id}`)
+        .then(res => res.json())
+        .then((data) => {
+          this.libro = new Libro(data.titulo, data.autor,
+            data.editorial, data.paginas, data.precio);
+          this.libroEditar = data._id;
+          this.editar = true;
         });
     },
   },
