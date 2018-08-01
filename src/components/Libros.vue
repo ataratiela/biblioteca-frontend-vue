@@ -6,6 +6,51 @@
 
     <div class="container">
       <div class="row pt-5">
+        <div class="col-md-5">
+          <div class="card">
+            <div class="card-body">
+              <form @submit="createLibro">
+                <div class="form-group">
+                  <input
+                  v-model="libro.titulo"
+                  placeholder="Título"
+                  type="text"
+                  class="form-control"
+                  >
+                </div>
+                <div class="form-group">
+                  <input
+                  v-model="libro.autor"
+                  placeholder="Autor"
+                  type="text"
+                  class="form-control">
+                </div>
+                <div class="form-group">
+                  <input
+                  v-model="libro.editorial"
+                  placeholder="Editorial"
+                  type="text"
+                  class="form-control">
+                </div>
+                <div class="form-group">
+                  <input
+                  v-model="libro.paginas"
+                  placeholder="Páginas"
+                  type="text"
+                  class="form-control">
+                </div>
+                <div class="form-group">
+                  <input
+                  v-model="libro.precio"
+                  placeholder="Precio"
+                  type="text"
+                  class="form-control">
+                </div>
+                <button class="btn btn-primary btn-block">Crear</button>
+              </form>
+            </div>
+          </div>
+        </div>
         <div class="col-md-7">
           <table class="table table-bordered">
             <thead>
@@ -34,10 +79,21 @@
 </template>
 
 <script>
+class Libro {
+  constructor(titulo, autor, editorial, paginas, precio) {
+    this.titulo = titulo;
+    this.autor = autor;
+    this.editorial = editorial;
+    this.paginas = paginas;
+    this.precio = precio;
+  }
+}
+
 export default {
   name: 'Libros',
   data() {
     return {
+      libro: new Libro(),
       libros: [],
     };
   },
@@ -50,6 +106,19 @@ export default {
         .then(res => res.json())
         .then((data) => {
           this.libros = data;
+        });
+    },
+    createLibro() {
+      fetch('http://localhost:3000/api/libros', {
+        method: 'POST',
+        body: JSON.stringify(this.libro),
+        headers: {
+          'Content-type': 'application/json',
+        },
+      })
+        .then(res => res.json())
+        .then(() => {
+          this.getLibros();
         });
     },
   },
