@@ -69,6 +69,11 @@
                 <td>{{ libro.editorial }}</td>
                 <td>{{ libro.paginas }}</td>
                 <td>{{ libro.precio }}</td>
+                <td>
+                  <button @click="deleteLibro(libro._id)" class="btn btn-danger">
+                    Eliminar
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -112,6 +117,18 @@ export default {
       fetch('http://localhost:3000/api/libros', {
         method: 'POST',
         body: JSON.stringify(this.libro),
+        headers: {
+          'Content-type': 'application/json',
+        },
+      })
+        .then(res => res.json())
+        .then(() => {
+          this.getLibros();
+        });
+    },
+    deleteLibro(id) {
+      fetch(`http://localhost:3000/api/libros/${id}`, {
+        method: 'DELETE',
         headers: {
           'Content-type': 'application/json',
         },
