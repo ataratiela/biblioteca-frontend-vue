@@ -14,17 +14,17 @@ export default {
         {
           id: 0,
           text: 'Libros',
-          page:'/api/libros'
+          page: '/api/libros',
         },
         {
           id: 1,
           text: 'Socios',
-          page:'/api/socios'
+          page: '/api/socios',
         },
         {
           id: 2,
           text: 'Prestamos',
-          page:'/api/prestamos'
+          page: '/api/prestamos',
         },
       ],
     };
