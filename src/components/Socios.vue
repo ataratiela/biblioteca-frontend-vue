@@ -64,6 +64,11 @@
                 <td>{{ socio.nombre }}</td>
                 <td>{{ socio.apellidos }}</td>
                 <td>{{ socio.direccion }}</td>
+                <td>
+                  <button @click="deleteSocio(socio._id)" class="btn btn-danger">
+                    Eliminar
+                </button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -113,7 +118,19 @@ export default {
         .then(() => {
           this.getSocios();
         });
-    }
+    },
+    deleteSocio(id) {
+      fetch(`http://localhost:3000/api/socios/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-type': 'application/json',
+        },
+      })
+        .then(res => res.json())
+        .then(() => {
+          this.getSocios();
+        });
+    },
   },
 };
 </script>
