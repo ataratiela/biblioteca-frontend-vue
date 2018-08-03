@@ -4,7 +4,7 @@
       <div class="col-md-5">
         <div class="card">
           <div class="card-body">
-            <form @submit="createSocio">
+            <form @submit="enviarSocio">
               <div class="form-group">
                 <input
                 v-model="socio.usuario"
@@ -41,7 +41,12 @@
                 type="text"
                 class="form-control">
               </div>
-              <button class="btn btn-primary btn-block">Crear</button>
+              <template v-if="editar === false">
+                <button class="btn btn-primary btn-block">Crear</button>
+              </template>
+              <template v-else>
+                <button class="btn btn-primary btn-block">Actualizar</button>
+              </template>
             </form>
           </div>
         </div>
@@ -68,6 +73,9 @@
                   <button @click="deleteSocio(socio._id)" class="btn btn-danger">
                     Eliminar
                 </button>
+                <button @click="editSocio(socio._id)" class="btn btn-secondary">
+                  Editar
+                </button>
                 </td>
               </tr>
             </tbody>
@@ -93,6 +101,8 @@ export default {
     return {
       socio: new Socio(),
       socios: [],
+      editar: false,
+      socioEditar: '',
     };
   },
   created() {
@@ -106,18 +116,34 @@ export default {
           this.socios = data;
         });
     },
-    createSocio() {
-      fetch('http://localhost:3000/api/socios', {
-        method: 'POST',
-        body: JSON.stringify(this.socio),
-        headers: {
-          'Content-type': 'application/json',
-        },
-      })
-        .then(res => res.json())
-        .then(() => {
-          this.getSocios();
-        });
+    enviarSocio() {
+      if (this.editar === false) {
+        fetch('http://localhost:3000/api/socios', {
+          method: 'POST',
+          body: JSON.stringify(this.socio),
+          headers: {
+            'Content-type': 'application/json',
+          },
+        })
+          .then(res => res.json())
+          .then(() => {
+            this.getSocios();
+          });
+      } else {
+        fetch(`http://localhost:3000/api/socios/${this.socioEditar}`, {
+          method: 'PUT',
+          body: JSON.stringify(this.socio),
+          headers: {
+            'Content-type': 'application/json',
+          },
+        })
+          .then(res => res.json())
+          .then(() => {
+            this.getSocios();
+            this.editar = false;
+          });
+      }
+      this.socio = new Socio();
     },
     deleteSocio(id) {
       fetch(`http://localhost:3000/api/socios/${id}`, {
@@ -129,6 +155,16 @@ export default {
         .then(res => res.json())
         .then(() => {
           this.getSocios();
+        });
+    },
+    editSocio(id) {
+      fetch(`http://localhost:3000/api/socios/${id}`)
+        .then(res => res.json())
+        .then((data) => {
+          this.socio = new Socio(data.usuario, data.clave,
+            data.nombre, data.apellidos, data.direccion);
+          this.socioEditar = data._id;
+          this.editar = true;
         });
     },
   },
